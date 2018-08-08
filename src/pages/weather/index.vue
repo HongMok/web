@@ -2,18 +2,21 @@
   <div>
 
     <div class="weather-wrapper">
-      <div class="temp">12°</div>
-      <div class="desc">晴天</div>
-      <img class="weather-bg" src="../../../static/images/sunny-bg.png" alt="">
+      <div class="city">{{city}}</div>
+      <div class="temp">{{temp}}°</div>
+      <div class="desc">{{cnWeather}}</div>
+      <img class="weather-bg" v-bind:src="nowWeatherBackground" alt="">
     </div>
 
     
 
-    
+
   </div>
 </template>
 
 <script>
+
+import WeatherHelper from '@/utils/weather-config'
 
 export default {
   components: {
@@ -21,11 +24,52 @@ export default {
 
   data () {
     return {
-      msg: 'hi'
+      temp:0,
+      weather:"sunny",
+      city:"广州市",
     }
   },
 
-  created () {
+  computed:{
+    cnWeather(){
+      return WeatherHelper.getCnWeather(this.weather);
+    },
+    nowWeatherBackground(){
+      return '../../../static/images/' + this.weather + '-bg.png';
+    }
+  },
+
+  methods:{
+    getNow(callback){
+      wx.request({
+        url: 'https://test-miniprogram.com/api/weather/now', 
+        data: {
+          city: this.city
+        },
+        success: res => {
+          console.log(res);
+          let result = res.data.result;
+          this.temp = result.now.temp;
+          this.weather = result.now.weather;
+
+          wx.setNavigationBarColor({
+                frontColor: '#000000',
+                backgroundColor: WeatherHelper.getWeatherColor(this.weather),
+          });
+          callback && callback();
+        }
+      })
+    }
+  },
+
+  onPullDownRefresh(){
+    this.getNow(()=>{
+      wx.stopPullDownRefresh();
+    });
+  },
+
+  onLoad () {
+    this.getNow();
   }
 }
 </script>
@@ -36,6 +80,13 @@ export default {
   font-size: 200rpx;
   line-height: 280rpx;
   opacity: 0.8;
+}
+
+.city {
+  text-align: center;
+  font-size: 40rpx;
+  line-height: 56rpx;
+  opacity: 0.65;
 }
 
 .desc {
