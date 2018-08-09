@@ -7,6 +7,7 @@
       <div class="desc">{{cnWeather}}</div>
       <img class="weather-bg" v-bind:src="nowWeatherBackground" alt="">
       <!-- hi -->
+      <!-- hello -->
     </div>
 
     
