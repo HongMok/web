@@ -6,6 +6,7 @@
       <div class="temp">{{temp}}°</div>
       <div class="desc">{{cnWeather}}</div>
       <img class="weather-bg" v-bind:src="nowWeatherBackground" alt="">
+      <!-- hi -->
     </div>
 
     
