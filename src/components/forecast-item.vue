@@ -1,9 +1,9 @@
 <template>
-  <div id="item">
-      <div class="time">{{weather.time}}时</div>
+  <div id="forecast-item">
+      <div class="time">{{weather.time}}</div>
       <img class="pic" :src="pic">
-      <div class="temp" style="width:100%">{{weather.temp}}°</div>
-      <div class="desc">{{cnWeather}}</div>
+      <div class="temp">{{weather.temp}}°</div>
+      <!-- <div class="desc">{{cnWeather}}</div> -->
   </div>
 </template>
 
@@ -26,18 +26,35 @@ export default {
 
 <style scoped>
 
-#item{
-    width: 150rpx;
+#forecast-item{
+    display:flex;
+    flex-direction:column;
+    flex-shrink: 0;
+    width: 120rpx;
+    font-size: 36rpx;
+    line-height: 42rpx;
+    align-items: center;
 }
 
 .pic {
+    margin: 20rpx;
     width: 2rem;
     height: 2rem;
 }
-.time .temp .desc {
-  text-align: center;
-  font-size: 40rpx;
-  line-height: 56rpx;
-  opacity: 0.65;
+
+.time {
+    font-size: 30rpx;
+    line-height: 42rpx;
+}
+
+.temp {
+    font-size: 40rpx;
+    line-height: 56rpx;
+}
+
+.desc {
+  margin-top: 50rpx;
+  width: 60rpx;
+  height: 60rpx;
 }
 </style>

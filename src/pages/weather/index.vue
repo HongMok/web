@@ -2,10 +2,27 @@
   <div>
 
     <div class="weather-wrapper">
-      <div class="city">{{city}}</div>
+
+      <div class="location-wrapper" @click="onTapLocation">
+
+        <div class="location">
+          <img class="location-icon" src="../../../static/images/location-icon.png" alt="">
+          <div class="location-text">{{city}}</div>
+        </div>
+
+        <div class="location-tips">点击获取当前位置</div>
+      </div>
+
       <div class="temp">{{temp}}°</div>
       <div class="desc">{{cnWeather}}</div>
       <img class="weather-bg" v-bind:src="nowWeatherBackground" alt="">
+
+      <view class="day-weather" @click="onClickDayWeather">
+        <view class="day-text">{{todayDate}}</view>
+        <view class="temp-text">{{todayTemp}}</view>
+        <img class="arrow-icon" src="../../../static/images/arrow.png">
+      </view>
+
     </div>
 
     <div class="timetips">
@@ -81,13 +98,15 @@ export default {
     return {
       temp:0,
       weather:"sunny",
-      city:"广州市",
+      city:"上海市",
       foreCastList:[],
       startY: 0,  // 纵轴方向初始化位置
       scrollToX: 0,
       scrollToY: 0,
       scrollToTime: 700,
-      arr:[1,2,3,4,5]
+      arr:[1,2,3,4,5],
+      todayDate:'',
+      todayTemp:'',
     }
   },
 
@@ -123,9 +142,12 @@ export default {
 
           let nowHour = new Date().getHours();
           const offset = 3;
-          for(let i = 0; i < this.foreCastList.length; i++){
-            this.foreCastList[i].time = (nowHour + i * offset)%24;
+          this.foreCastList[0].time = "现在";
+          for(let i = 1; i < this.foreCastList.length; i++){
+            this.foreCastList[i].time = (nowHour + i * offset)%24 + '时';
           }
+
+          this.setToday(result);
 
           wx.setNavigationBarColor({
                 frontColor: '#000000',
@@ -134,7 +156,27 @@ export default {
           callback && callback();
         }
       })
-    }
+    },
+    setToday(result){
+      let date = new Date();
+      this.todayTemp = result.today.minTemp + "° - " + result.today.maxTemp + "°";
+      this.todayDate = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate() + " 今天";  
+    },
+    onClickDayWeather(event){
+      // wx.showToast({
+      //   title:'click'
+      // });
+
+      const url = '../list/main' + "?city=" + this.city;
+      wx.navigateTo({ url });
+    },
+    onTapLocation() {
+      wx.getLocation({
+        success: res =>{
+            console.log(res.latitude, res.longitude)
+        }
+      })
+    },
   },
 
   onPullDownRefresh(){
@@ -173,7 +215,7 @@ export default {
 
 .weather-wrapper {
   position: relative;
-  padding-top: 174rpx;
+  padding-top: 20rpx;
   padding-bottom: 250rpx;
   /* background-size: 100% auto;
   background-repeat: no-repeat; */
@@ -199,7 +241,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 40rpx;
+  margin: 40rpx;
 }
 
 .timetips-icon {
@@ -218,15 +260,63 @@ export default {
     display:flex;
 }
 
-.forecast-item {
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-}
 
 .hor {
   display: flex;
   flex-direction: row;
   width: 750rpx;
 }
+
+.day-weather {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  left: 40rpx;
+  right: 40rpx;
+  height: 90rpx;
+  border-top: 1px solid rgba(0,0,0,0.1);
+  font-size: 30rpx;
+  line-height: 42rpx;
+  opacity: 0.5;
+}
+
+.temp-text {
+  flex-grow: 1;
+  padding-right: 30rpx;
+  text-align: right;
+}
+
+.arrow-icon {
+  width: 13rpx;
+  height: 24rpx;
+}
+
+.location-icon {
+  margin-right: 10rpx;
+  width: 21rpx;
+  height: 30rpx;
+}
+
+.location-text{
+    line-height: 42 rpx;
+    opacity: 0.5;
+}
+.location-tips{
+    margin-top: 10 rpx;
+    line-height: 42 rpx;
+    opacity: 0.5;
+    text-align: center;
+}
+.location-wrapper{
+    margin-bottom: 60 rpx;
+    font-size: 30rpx;
+    line-height: 42rpx;
+}
+.location {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 </style>
