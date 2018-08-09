@@ -11,9 +11,54 @@
     <div class="timetips">
         <img class="timetips-icon" src="../../../static/images/time-icon.png">
         <text class="timetips-text">未来24小时天气预测</text>
-      </div>
+    </div>
 
-    
+    <!-- <div class="forecast">
+      <ul>
+        <forecast-item v-for="(value,key) in foreCastList" :key="key" :weather="value">
+        </forecast-item>
+      </ul>
+    </div> -->
+
+    <!-- <vue-better-scroll
+        style="height:300px" 
+        class="wrapper"
+        ref="scroll"
+        :direction="vertical"
+        :startY="parseInt(startY)"
+        >
+        <ul ref="list" class="list-content">
+            <li class="list-item" v-for="(value,key) in foreCastList" :key="key">
+              <forecast-item :weather="value">
+              </forecast-item>
+            </li>
+        </ul>
+    </vue-better-scroll> -->
+
+    <scroll-view style="height:200rpx" scroll-x="true" >
+      <view class='hor'>
+        <block v-for="(value, key) in foreCastList" :key="key">
+          <forecast-item :weather="value">
+          </forecast-item>
+        </block>
+      </view>
+    </scroll-view>
+
+
+    <scroll-view scroll-x>
+        <view class='forecast-list'>
+            <view class="forecast-item" v-for="(value, key) in arr" :key="key">
+              {{value}}
+            </view>
+        </view>
+    </scroll-view>
+
+    <scroll-view scroll-x>
+        <view class='forecast-list'>
+            <forecast-item class="forecast-item" v-for="(value, key) in foreCastList" :key="key" :weather="value">
+            </forecast-item>
+        </view>
+    </scroll-view>
 
 
   </div>
@@ -21,10 +66,15 @@
 
 <script>
 
+import ForecastItem from '@/components/forecast-item'
+import VueBetterScroll from 'vue2-better-scroll'
+
 import WeatherHelper from '@/utils/weather-config'
 
 export default {
   components: {
+    'forecast-item' : ForecastItem,
+    'vue-better-scroll' : VueBetterScroll
   },
 
   data () {
@@ -32,7 +82,16 @@ export default {
       temp:0,
       weather:"sunny",
       city:"广州市",
+      foreCastList:[],
+      startY: 0,  // 纵轴方向初始化位置
+      scrollToX: 0,
+      scrollToY: 0,
+      scrollToTime: 700,
+      arr:[1,2,3,4,5]
     }
+  },
+
+  mounted () {
   },
 
   computed:{
@@ -45,6 +104,10 @@ export default {
   },
 
   methods:{
+    // 滚动到页面顶部
+    scrollTo () {
+      this.$refs.scroll.scrollTo(this.scrollToX, this.scrollToY, this.scrollToTime)
+    },
     getNow(callback){
       wx.request({
         url: 'https://test-miniprogram.com/api/weather/now', 
@@ -56,6 +119,7 @@ export default {
           let result = res.data.result;
           this.temp = result.now.temp;
           this.weather = result.now.weather;
+          this.foreCastList = result.forecast;
 
           wx.setNavigationBarColor({
                 frontColor: '#000000',
@@ -79,7 +143,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .temp {
   text-align: center;
   font-size: 200rpx;
@@ -142,5 +206,19 @@ export default {
   font-size: 30rpx;
   line-height: 42rpx;
   opacity: 0.5;
+}
+
+.forecast-list {
+    display:flex;
+}
+
+.forecast-item {
+    display:flex;
+}
+
+.hor {
+  display: flex;
+  flex-direction: row;
+  width: 750rpx;
 }
 </style>
