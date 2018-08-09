@@ -6,9 +6,12 @@
       <div class="temp">{{temp}}°</div>
       <div class="desc">{{cnWeather}}</div>
       <img class="weather-bg" v-bind:src="nowWeatherBackground" alt="">
-      <!-- hi -->
-      <!-- hello -->
     </div>
+
+    <div class="timetips">
+        <img class="timetips-icon" src="../../../static/images/time-icon.png">
+        <text class="timetips-text">未来24小时天气预测</text>
+      </div>
 
     
 
@@ -120,5 +123,24 @@ export default {
   width: 100%;
   height: 100%;
   z-index: -1;
+}
+
+.timetips {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40rpx;
+}
+
+.timetips-icon {
+  margin-right: 10rpx;
+  width: 36rpx;
+  height: 28rpx;
+}
+
+.timetips-text {
+  font-size: 30rpx;
+  line-height: 42rpx;
+  opacity: 0.5;
 }
 </style>
