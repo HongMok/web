@@ -35,23 +35,23 @@
         </ul>
     </vue-better-scroll> -->
 
-    <scroll-view style="height:200rpx" scroll-x="true" >
+    <!-- <scroll-view style="height:200rpx" scroll-x="true" >
       <view class='hor'>
         <block v-for="(value, key) in foreCastList" :key="key">
           <forecast-item :weather="value">
           </forecast-item>
         </block>
       </view>
-    </scroll-view>
+    </scroll-view> -->
 
 
-    <scroll-view scroll-x>
+    <!-- <scroll-view scroll-x>
         <view class='forecast-list'>
             <view class="forecast-item" v-for="(value, key) in arr" :key="key">
               {{value}}
             </view>
         </view>
-    </scroll-view>
+    </scroll-view> -->
 
     <scroll-view scroll-x>
         <view class='forecast-list'>
@@ -120,6 +120,12 @@ export default {
           this.temp = result.now.temp;
           this.weather = result.now.weather;
           this.foreCastList = result.forecast;
+
+          let nowHour = new Date().getHours();
+          const offset = 3;
+          for(let i = 0; i < this.foreCastList.length; i++){
+            this.foreCastList[i].time = (nowHour + i * offset)%24;
+          }
 
           wx.setNavigationBarColor({
                 frontColor: '#000000',
@@ -214,6 +220,8 @@ export default {
 
 .forecast-item {
     display:flex;
+    flex-direction:column;
+    align-items:center;
 }
 
 .hor {

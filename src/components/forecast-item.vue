@@ -1,8 +1,9 @@
 <template>
   <div id="item">
-    <img class="pic" :src="pic">
-    <div class="temp">{{weather.temp}}°</div>
-    <div class="desc">{{cnWeather}}</div>
+      <div class="time">{{weather.time}}时</div>
+      <img class="pic" :src="pic">
+      <div class="temp" style="width:100%">{{weather.temp}}°</div>
+      <div class="desc">{{cnWeather}}</div>
   </div>
 </template>
 
@@ -26,14 +27,14 @@ export default {
 <style scoped>
 
 #item{
-    width: 100rpx;
+    width: 150rpx;
 }
 
 .pic {
     width: 2rem;
     height: 2rem;
 }
-.temp .desc {
+.time .temp .desc {
   text-align: center;
   font-size: 40rpx;
   line-height: 56rpx;
