@@ -19,7 +19,7 @@ export default {
   },
   computed:{
       pic(){
-          return '../../../static/images/' + this.data.weather + '-icon.png';
+          return '/static/images/' + this.data.weather + '-icon.png';
       },
       today(){
           let date = new Date();

@@ -6,13 +6,13 @@
       <div class="location-wrapper" @click="onTapLocation">
 
         <div class="location">
-          <img class="location-icon" src="../../../static/images/location-icon.png" alt="">
+          <img class="location-icon" src="/static/images/location-icon.png" alt="">
           <div class="location-text">{{city}}</div>
         </div>
 
         <!-- hello hihi -->
 
-        <div class="location-tips">点击获取当前位置</div>
+        <button plain="true" open-type="openSetting" bindopensetting='openSetting' class="location-tips">{{locationTips}}</button>
       </div>
 
       <div class="temp">{{temp}}°</div>
@@ -22,13 +22,13 @@
       <view class="day-weather" @click="onClickDayWeather">
         <view class="day-text">{{todayDate}}</view>
         <view class="temp-text">{{todayTemp}}</view>
-        <img class="arrow-icon" src="../../../static/images/arrow.png">
+        <img class="arrow-icon" src="/static/images/arrow.png">
       </view>
 
     </div>
 
     <div class="timetips">
-        <img class="timetips-icon" src="../../../static/images/time-icon.png">
+        <img class="timetips-icon" src="/static/images/time-icon.png">
         <text class="timetips-text">未来24小时天气预测</text>
     </div>
 
@@ -102,6 +102,7 @@ export default {
       temp:0,
       weather:"sunny",
       city:"上海市",
+      isLocationed:false,
       foreCastList:[],
       startY: 0,  // 纵轴方向初始化位置
       scrollToX: 0,
@@ -121,7 +122,13 @@ export default {
       return WeatherHelper.getCnWeather(this.weather);
     },
     nowWeatherBackground(){
-      return '../../../static/images/' + this.weather + '-bg.png';
+      return '/static/images/' + this.weather + '-bg.png';
+    },
+    locationTips(){
+      if(this.isLocationed){
+        return '';
+      }
+      return '点击获取当前位置';
     }
   },
 
@@ -214,11 +221,14 @@ export default {
 
     //检查是否授权获取地理位置
     checkLocationSetting(cb){
+
+      var self = this;
+
       wx.getSetting({
         success: (res) => {
           console.log(res);
 
-          cb && cb(res.authSetting['scope.userLocation']);
+          cb && cb( self.checkAndSetLocation(res) );
           /*
           * res.authSetting = {
           *   "scope.userInfo": true,
@@ -228,6 +238,25 @@ export default {
         }
       })
     },
+
+    checkAndSetLocation(res){
+      if(res.authSetting['scope.userLocation']){
+        this.isLocationed = true;
+        this.getLocation( this.getNow );
+        return true;
+      }
+      else{
+        this.isLocationed = false;
+        this.city = '广州市';
+        return false;
+      }
+    },
+
+    
+  },
+
+  openSetting:function(res){
+      console.log(res);
   },
 
   onPullDownRefresh(){
@@ -239,10 +268,17 @@ export default {
   onLoad () {
 
     var self = this;
-    this.getLocation(self.getNow);
+    // this.getLocation(self.getNow);
 
     this.checkLocationSetting(isOpen=>{
       console.log(isOpen);
+      if(!isOpen){
+        // wx.openSetting({
+        //   success: (res) => {
+        //     self.checkAndSetLocation(res);
+        //   }
+        // })
+      }
     });
 
     // this.getNow();
@@ -368,6 +404,7 @@ export default {
     line-height: 42 rpx;
     opacity: 0.5;
     text-align: center;
+    height: 42rpx;
 }
 .location-wrapper{
     margin-bottom: 60 rpx;

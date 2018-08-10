@@ -15,7 +15,7 @@ export default {
   props: ['weather'],
   computed:{
       pic(){
-          return '../../../static/images/' + this.weather.weather + '-icon.png';
+          return '/static/images/' + this.weather.weather + '-icon.png';
       },
       cnWeather(){
         return WeatherHelper.getCnWeather(this.weather.weather);
