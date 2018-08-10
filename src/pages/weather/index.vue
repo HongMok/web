@@ -89,6 +89,7 @@ import ForecastItem from '@/components/forecast-item'
 import VueBetterScroll from 'vue2-better-scroll'
 
 import WeatherHelper from '@/utils/weather-config'
+// import bmap from '@utils/bmap-wx'
 
 export default {
   components: {
@@ -179,6 +180,52 @@ export default {
         }
       })
     },
+
+    getLocation(cb){
+
+      var self = this;
+
+      wx.getLocation({
+        success: function(res) {
+          var latitude = res.latitude
+          var longitude = res.longitude
+          var speed = res.speed
+          var accuracy = res.accuracy
+
+
+          const url = 'http://api.map.baidu.com/geocoder/v2/';
+          wx.request({
+            url:url,
+            data:{
+              ak:'k3T9X7zsQ5YCFaD78P4yzydGbmoY3FTs',
+              location: latitude +',' + longitude,
+              output:'json',
+              pois:1
+            },
+            success:res=>{
+              console.log(res);
+              self.city = res.data.result.addressComponent.city;
+              cb && cb();
+            }
+          });          
+        }
+      });
+    },
+
+    //检查是否授权获取地理位置
+    checkLocationSetting(cb){
+      wx.getSetting({
+        success: (res) => {
+          console.log(res);
+          /*
+          * res.authSetting = {
+          *   "scope.userInfo": true,
+          *   "scope.userLocation": true
+          * }
+          */
+        }
+      })
+    },
   },
 
   onPullDownRefresh(){
@@ -188,7 +235,15 @@ export default {
   },
 
   onLoad () {
-    this.getNow();
+
+    var self = this;
+    this.getLocation(self.getNow);
+
+    this.checkLocationSetting();
+
+    // this.getNow();
+
+
   }
 }
 </script>
