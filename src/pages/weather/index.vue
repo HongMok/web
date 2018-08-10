@@ -10,7 +10,7 @@
           <div class="location-text">{{city}}</div>
         </div>
 
-        <!-- hello -->
+        <!-- hello hihi -->
 
         <div class="location-tips">点击获取当前位置</div>
       </div>
