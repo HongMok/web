@@ -217,6 +217,8 @@ export default {
       wx.getSetting({
         success: (res) => {
           console.log(res);
+
+          cb && cb(res.authSetting['scope.userLocation']);
           /*
           * res.authSetting = {
           *   "scope.userInfo": true,
@@ -239,7 +241,9 @@ export default {
     var self = this;
     this.getLocation(self.getNow);
 
-    this.checkLocationSetting();
+    this.checkLocationSetting(isOpen=>{
+      console.log(isOpen);
+    });
 
     // this.getNow();
 
